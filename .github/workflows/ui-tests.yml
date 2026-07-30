@@ -1,0 +1,53 @@
+name: OpenCart UI Automation Tests
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  ui-tests:
+    name: Run UI Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v7
+
+      - name: Set Up Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "22"
+          cache: maven
+
+      - name: Run Cucumber Tests
+        run: mvn --batch-mode --no-transfer-progress clean test -Dheadless=true
+
+      - name: Upload Allure Results
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: allure-results
+          path: target/allure-results
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Upload Test Reports
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: test-reports
+          path: |
+            target/cucumber-reports
+            target/surefire-reports
+          if-no-files-found: warn
+          retention-days: 14

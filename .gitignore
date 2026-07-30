@@ -1,0 +1,19 @@
+# Maven
+target/
+
+# IntelliJ IDEA
+.idea/
+*.iml
+
+# Allure
+.allure/
+allure-results/
+allure-report/
+
+# Test reports
+test-output/
+*.log
+
+# Operating system
+.DS_Store
+Thumbs.db
