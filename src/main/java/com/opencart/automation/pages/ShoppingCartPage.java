@@ -1,6 +1,8 @@
 package com.opencart.automation.pages;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.ElementClickInterceptedException;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
 public class ShoppingCartPage extends BasePage {
@@ -22,7 +24,20 @@ public class ShoppingCartPage extends BasePage {
             );
 
     public void openShoppingCartPage() {
-        click(shoppingCartLink);
+        try {
+            click(shoppingCartLink);
+        } catch (ElementClickInterceptedException exception) {
+            ((JavascriptExecutor) driver).executeScript(
+                    "arguments[0].click();",
+                    waitForElementToBeVisible(shoppingCartLink)
+            );
+        }
+
+        wait.until(
+                ExpectedConditions.urlContains(
+                        "route=checkout/cart"
+                )
+        );
     }
 
     public boolean isProductDisplayed(String productName) {
